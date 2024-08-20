@@ -49,8 +49,8 @@ func getTasks(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	w.Write(resp)
+	//w.WriteHeader(http.StatusOK)
+	_, _ = w.Write(resp)
 }
 
 func getTask(w http.ResponseWriter, r *http.Request) {
@@ -71,8 +71,8 @@ func getTask(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	w.Write(resp)
+	//w.WriteHeader(http.StatusOK)
+	_, _ = w.Write(resp)
 
 }
 
@@ -105,6 +105,11 @@ func postTask(w http.ResponseWriter, r *http.Request) {
 
 	if err = json.Unmarshal(buf.Bytes(), &task); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	if _, ok := tasks[task.ID]; ok {
+		http.Error(w, fmt.Sprintf("Task with id %s is already exists", task.ID), http.StatusBadRequest)
 		return
 	}
 
